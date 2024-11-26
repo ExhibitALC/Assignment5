@@ -1,0 +1,51 @@
+import hashlib
+import sqlite3
+
+# Function to demonstrate an SQL Injection vulnerability
+def vulnerable_sql_query(user_input):
+    connection = sqlite3.connect('example.db')
+    cursor = connection.cursor()
+    query = f"SELECT * FROM users WHERE username = '{user_input}';"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    print(result)
+    connection.close()
+
+# Function using insecure hashing algorithm (MD5)
+def insecure_md5_hashing(password):
+    hash_object = hashlib.md5(password.encode())
+    print(f"MD5 hash of password: {hash_object.hexdigest()}")
+
+# Function with buffer overflow vulnerability (using unsafe input)
+def unsafe_input_function():
+    user_input = input("Enter some text: ")
+    print(f"You entered: {user_input}")
+
+# Function with unhandled exception (ZeroDivisionError)
+def divide_by_zero():
+    x = 1 / 0  # Intentional division by zero error
+
+# Function with missing input validation (unchecked user input)
+def process_data(data):
+    if not isinstance(data, list):  # Minimal validation, but it could be expanded
+        print("Invalid input data type.")
+        return
+    print(f"Data processed: {data}")
+
+if __name__ == '__main__':
+    # Test vulnerable functions
+    user_input = "admin' OR '1'='1"  # SQL Injection test input
+    vulnerable_sql_query(user_input)
+
+    password = "password123"  # Example insecure password
+    insecure_md5_hashing(password)
+
+    unsafe_input_function()  # Unchecked user input
+
+    try:
+        divide_by_zero()  # Will raise an exception
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+    process_data("some text")  # Will show a warning about invalid data type
+    process_data([1, 2, 3])  # Correct input
